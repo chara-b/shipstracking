@@ -34,6 +34,7 @@ const MainScreen = props => {
     const [usercolor, setUserColorValue] = useState('#2b3740')
     const [userlettercolor, setUserLetterColor] = useState('#61dafb')
     const [userbuttoncolor, setUserButtonColor] = useState('#202930')
+    const [featureclickedonmap, setFeatureclickedonmap] = useState('')
    // const [userlettercolor, setUserLetterColorValue] = useState('#61dafb')
     // useMemo xrisimopoieitai gt to component kanei polla renders mexri na oloklirothei to render tou kai
     // emeis theloume mono otan exoume allagi sto [usercolorvalue, userSetColorValue] na perniountai sto
@@ -41,7 +42,7 @@ const MainScreen = props => {
     // diladi theloume oi times edo --> <themeColorsContext.Provider value={{usercolorvalue, userSetColorValue}}>
     // na enimeronontai mono otan allazei kapoio apo ta [usercolorvalue, userSetColorValue] kai oxi se kathe allagi
     // pou kanei to component na rendarontai ksana kai auta...
-  const providerValue = useMemo(() => ({usercolor, setUserColorValue, userlettercolor, setUserLetterColor, userbuttoncolor, setUserButtonColor}), [usercolor, setUserColorValue, userlettercolor, setUserLetterColor, userbuttoncolor, setUserButtonColor]);
+  const providerValue = useMemo(() => ({usercolor, setUserColorValue, userlettercolor, setUserLetterColor, userbuttoncolor, setUserButtonColor, featureclickedonmap, setFeatureclickedonmap}), [usercolor, setUserColorValue, userlettercolor, setUserLetterColor, userbuttoncolor, setUserButtonColor, featureclickedonmap, setFeatureclickedonmap]);
   //const providerValue2 = useMemo(() => ({userlettercolor, setUserLetterColorValue}), [userlettercolor, setUserLetterColorValue]);
  
   //  const [state, setState] = useState({

@@ -31,6 +31,7 @@ const useStyles = makeStyles({
 const TheMap = props => {
     const {usercolor, setUserColorValue} = useContext(myContext);
     const {userbuttoncolor, setUserButtonColor} = useContext(myContext);
+    const {featureclickedonmap, setFeatureclickedonmap} = useContext(myContext);
     const classes = useStyles();
     const [filecontents, setFilecontents] = useState([]);
     const [extractedValues, setExtractedFeatureClickedValues] = useState();
@@ -79,15 +80,15 @@ function whenClicked(e) { // auti i methodos tha pigenei ta data tou feature pou
             },
             onEachFeature:  function (feature, layer) {
 
-                var popupContent = '<table>';
+                var popupContent = "<table>";
                 for (var p in feature.properties) {
                     if(p !== "show_on_map"){
-                    popupContent += '<tr><td><b>' + p + '<b>:</b>' + '</b></td><td>'+ feature.properties[p] + '</td></tr>';
+                    popupContent += "<tr><td><b>" + p + "<b>:</b>" + "</b></td><td>"+ feature.properties[p] + "</td></tr>";
                     }
                 }
-                popupContent += '</table>';
+                popupContent += "</table>";
                     layer.bindPopup(popupContent);
- 
+                    setFeatureclickedonmap("\""+popupContent+"\"")
                     layer.on({
                         click: whenClicked
                     });
@@ -156,7 +157,8 @@ var geojsonMarkerOptions = {
                         });
                       });
            
-                    setExtractedFeatureClickedValues({ ...extractedValues, popupContent })
+                  //  setExtractedFeatureClickedValues({ ...extractedValues, popupContent })
+                  //  setFeatureclickedonmap(popupContent)
             },
             filter: function(feature, layer) {
                 return feature.properties.show_on_map;
@@ -260,9 +262,9 @@ function groupBy(objectArray, property, id) { // group by same id so when click 
         <div  id="mapid" className={classes.map}></div>
         <Button style={{display: 'flex', float: 'right', backgroundColor: userbuttoncolor, marginRight: '150px', marginTop: '10px'}}>Remove all paths</Button>
        {/* <input style={{display: 'flex', marginLeft: '40px'}} type="file" name="csvinput" id="csvinput" onChange={(e) => parseFile(e.target.files) }/>*/}
-       <label class="custom-file-upload" style={{backgroundColor: userbuttoncolor}}>
+       <label className="custom-file-upload" style={{backgroundColor: userbuttoncolor}}>
             <input type="file" id="file-upload" name="csvinput" id="csvinput" onChange={(e) => parseFile(e.target.files) }/>
-            <i class="fa fa-cloud-upload"></i> Upload csv Dataset
+            <i className="fa fa-cloud-upload"></i> Upload csv Dataset
         </label>
         
         
