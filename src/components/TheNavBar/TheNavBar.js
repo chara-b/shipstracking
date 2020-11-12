@@ -4,7 +4,7 @@ import { makeStyles, Drawer, Button, List, Divider, ListItem, ListItemIcon, List
 import { DirectionsBoat, Equalizer, Info, Person } from '@material-ui/icons';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
-import ChangeThemeColor, {themeColorsContext} from '../ChangeThemeColor/ChangeThemeColor';
+import ChangeThemeColor, {myContext} from '../ChangeThemeColor/ChangeThemeColor';
 
 
 const useStylesForNavBar = makeStyles((theme) =>
@@ -91,10 +91,10 @@ const useStyles = makeStyles({
 const Anchor = 'left';
 
 const TheNavBar = props => {
-  const {userbuttoncolor, setUserButtonColor} = useContext(themeColorsContext);
-  const {usercolor, setUserColorValue} = useContext(themeColorsContext);
+  const {userbuttoncolor, setUserButtonColor} = useContext(myContext);
+  const {usercolor, setUserColorValue} = useContext(myContext);
   //const {userlettercolor, setUserLetterColorValue} = useContext(lettersthemecolorContext);
-  const {userlettercolor, setUserLetterColor} = useContext(themeColorsContext);
+  const {userlettercolor, setUserLetterColor} = useContext(myContext);
   const [isActive, setActive] = useState(false);
 
   const [switchstate, setStateswitch] = useState({

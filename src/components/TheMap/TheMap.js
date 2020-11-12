@@ -3,7 +3,11 @@ import React, { useEffect, useRef, useState, createContext, useContext } from 'r
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import './TheMap.css';
-import ChangeThemeColor, {themeColorsContext} from '../ChangeThemeColor/ChangeThemeColor';
+import ChangeThemeColor, {myContext} from '../ChangeThemeColor/ChangeThemeColor';
+
+
+
+export const mapfeatureContext = createContext(null);
 
 
 const useStyles = makeStyles({
@@ -25,8 +29,8 @@ const useStyles = makeStyles({
 
 
 const TheMap = props => {
-    const {usercolor, setUserColorValue} = useContext(themeColorsContext);
-    const {userbuttoncolor, setUserButtonColor} = useContext(themeColorsContext);
+    const {usercolor, setUserColorValue} = useContext(myContext);
+    const {userbuttoncolor, setUserButtonColor} = useContext(myContext);
     const classes = useStyles();
     const [filecontents, setFilecontents] = useState([]);
     const [extractedValues, setExtractedFeatureClickedValues] = useState();

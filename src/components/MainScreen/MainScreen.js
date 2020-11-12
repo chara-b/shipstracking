@@ -1,6 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles';
 import React, { useEffect, useState, useMemo } from 'react';
-import ChangeThemeColor, { themeColorsContext } from '../ChangeThemeColor/ChangeThemeColor';
+import ChangeThemeColor, { myContext } from '../ChangeThemeColor/ChangeThemeColor';
 import Info from '../Info/Info';
 import Stats from '../Stats/Stats';
 import TheMap from '../TheMap/TheMap';
@@ -59,11 +59,11 @@ const MainScreen = props => {
   const b = parseInt(usercolor.substr(5,2), 16)
     return (
         <div className={classes.root} style={{backgroundColor: r <= 126 ? 'rgba('+r+','+g+','+b+','+'0.8)' : 'rgba('+r+','+g+','+b+','+'0.4)'}}>
-          <themeColorsContext.Provider value={providerValue}>
+          <myContext.Provider value={providerValue}>
             <TheNavBar />            
             <Info />
             <TheMap/>
-          </themeColorsContext.Provider>
+          </myContext.Provider>
           
             {/*<Stats /> */ }
             {/*<ThreeDimensionalMode />*/ }

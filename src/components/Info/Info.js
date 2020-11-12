@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { Card, makeStyles, CardActionArea, CardActions, CardContent, CardMedia, Typography, Button } from '@material-ui/core';
 import { Frame, Stack } from "framer";
-import ChangeThemeColor, {themeColorsContext} from '../ChangeThemeColor/ChangeThemeColor';
+import ChangeThemeColor, {myContext} from '../ChangeThemeColor/ChangeThemeColor';
 
 
 const useStyles = makeStyles({
@@ -27,9 +27,9 @@ const Info = props => {
 
     const [isActive, setActive] = useState(false);
     const classes = useStyles();
-    const {usercolor, setUserColorValue} = useContext(themeColorsContext);
-    const {userlettercolor, setUserLetterColor} = useContext(themeColorsContext);
-    const {userbuttoncolor, setUserButtonColor} = useContext(themeColorsContext);
+    const {usercolor, setUserColorValue} = useContext(myContext);
+    const {userlettercolor, setUserLetterColor} = useContext(myContext);
+    const {userbuttoncolor, setUserButtonColor} = useContext(myContext);
     const CardClicked = () => {
         setActive(!isActive);
     }

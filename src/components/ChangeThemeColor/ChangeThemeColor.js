@@ -11,7 +11,7 @@ var ComponentProps = {
   backgroundColor: string,
 }
 */
-export const themeColorsContext = createContext('#2b3740');
+export const myContext = createContext();
 //export const lettersthemecolorContext = createContext('#61dafb');
 
 const useStylesForTheme = makeStyles((theme) =>
@@ -45,9 +45,9 @@ const useStyles = makeStyles({
 export default function ChangeThemeColor() {
   const classes = useStyles();
 
-  const {usercolor, setUserColorValue} = useContext(themeColorsContext);
-  const {userlettercolor, setUserLetterColor} = useContext(themeColorsContext);
-  const {userbuttoncolor, setUserButtonColor} = useContext(themeColorsContext);
+  const {usercolor, setUserColorValue} = useContext(myContext);
+  const {userlettercolor, setUserLetterColor} = useContext(myContext);
+  const {userbuttoncolor, setUserButtonColor} = useContext(myContext);
  // const {userlettercolor, setUserLetterColorValue} = useContext(lettersthemecolorContext);
 
   const [backgroundColor, setBackgroundColor] = React.useState('#2b3740');
