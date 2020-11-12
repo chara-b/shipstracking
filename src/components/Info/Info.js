@@ -3,6 +3,7 @@ import { Card, makeStyles, CardActionArea, CardActions, CardContent, CardMedia, 
 import { Frame, Stack } from "framer";
 import ChangeThemeColor, {myContext} from '../ChangeThemeColor/ChangeThemeColor';
 import Parser from 'html-react-parser';
+import './Info.css';
 
 const useStyles = makeStyles({
     root: {
@@ -51,14 +52,14 @@ const Info = props => {
     
 
     return (
-  <div style={{height: !isActive ? '55%' : '95%'}} className={classes.root}>    
+  <div style={{height: !isActive ? '55%' : '70%'}} className={classes.root}>    
     <Card style={{backgroundColor: usercolor, color: userlettercolor}}>
         <CardMedia
           className={classes.media}
        //   image="../ship.png"
           title="Ship Info"
         > LAST POSITION INFO </CardMedia>
-        <CardContent style={{height: !isActive ? '200px' : '400px', overflow: !isActive ? 'hidden' : 'visible'}}>   
+        <CardContent style={{height: !isActive ? '200px' : '350px', overflow: !isActive ? 'hidden' : 'visible'}}>   
           <div>
           {Parser(featureclickedonmap).slice(1, -1)}
           </div>
@@ -74,13 +75,18 @@ const Info = props => {
          // image="./ship.png"
          // title="Ship Info"
          > STATISTICS </CardMedia>
-        <CardContent style={{height: !isActive2 ? '200px' : '300px', overflow: !isActive2 ? 'hidden' : 'visible'}}>
+        <CardContent style={{height: '200px'}}>
           <div>
-            STATS ...
+    { /*<div className="blink_me">Loading</div> */}
+            <div className="spinner">
+              <div className="bounce1"></div>
+              <div className="bounce2"></div>
+              <div className="bounce3"></div>
+            </div>
             {/* [1,2,3].map(i => <div key={i}>{i}</div>) */}
           </div>
         </CardContent>
-        <CardActionArea onClick={Card2Clicked} style={{textAlign:"center",color:"inherit", height:"50px", fontSize:"20px", backgroundColor: userbuttoncolor}}>
+        <CardActionArea style={{textAlign:"center",color:"inherit", height:"50px", fontSize:"20px", backgroundColor: userbuttoncolor}}>
         Enlarge
       </CardActionArea>
     </Card>
