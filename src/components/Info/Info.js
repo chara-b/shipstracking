@@ -19,13 +19,16 @@ const useStyles = makeStyles({
       overflow: 'hidden',
     },
     media: {
-      height: 140,
+      height: 20,
+      textAlign: 'center'
+
     }
   });
 
 const Info = props => {
 
     const [isActive, setActive] = useState(false);
+    const [isActive2, setActive2] = useState(false);
     const classes = useStyles();
     const {usercolor, setUserColorValue} = useContext(myContext);
     const {userlettercolor, setUserLetterColor} = useContext(myContext);
@@ -36,6 +39,9 @@ const Info = props => {
     const CardClicked = () => {
         setActive(!isActive);
     }
+    const Card2Clicked = () => {
+      setActive2(!isActive2);
+    }
     const r = parseInt(usercolor.substr(1,2), 16)
     const g = parseInt(usercolor.substr(3,2), 16)
     const b = parseInt(usercolor.substr(5,2), 16)
@@ -45,16 +51,16 @@ const Info = props => {
     
 
     return (
-  <div style={{height: !isActive ? '57%' : '80%', overflow: !isActive ? 'hidden' : 'visible'}} className={classes.root}>    
+  <div style={{height: !isActive ? '55%' : '95%'}} className={classes.root}>    
     <Card style={{backgroundColor: usercolor, color: userlettercolor}}>
         <CardMedia
-        //  className={classes.media}
+          className={classes.media}
        //   image="../ship.png"
           title="Ship Info"
-        />
-        <CardContent style={{height: !isActive ? '100px' : '200px'}}>   
+        > LAST POSITION INFO </CardMedia>
+        <CardContent style={{height: !isActive ? '200px' : '400px', overflow: !isActive ? 'hidden' : 'visible'}}>   
           <div>
-          {Parser(featureclickedonmap)}
+          {Parser(featureclickedonmap).slice(1, -1)}
           </div>
         </CardContent>
         <CardActionArea  onClick={CardClicked} style={{textAlign:"center",color:"inherit", height:"50px", fontSize:"20px", backgroundColor: userbuttoncolor}}>
@@ -65,16 +71,16 @@ const Info = props => {
     <Card style={{backgroundColor: usercolor, color: userlettercolor}}>
         <CardMedia
           className={classes.media} 
-          image="./ship.png"
-          title="Ship Info"
-        />
-        <CardContent>
+         // image="./ship.png"
+         // title="Ship Info"
+         > STATISTICS </CardMedia>
+        <CardContent style={{height: !isActive2 ? '200px' : '300px', overflow: !isActive2 ? 'hidden' : 'visible'}}>
           <div>
-            STATS
+            STATS ...
             {/* [1,2,3].map(i => <div key={i}>{i}</div>) */}
           </div>
         </CardContent>
-        <CardActionArea style={{textAlign:"center",color:"inherit", height:"50px", fontSize:"20px", backgroundColor: userbuttoncolor}}>
+        <CardActionArea onClick={Card2Clicked} style={{textAlign:"center",color:"inherit", height:"50px", fontSize:"20px", backgroundColor: userbuttoncolor}}>
         Enlarge
       </CardActionArea>
     </Card>
