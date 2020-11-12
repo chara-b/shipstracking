@@ -1,0 +1,71 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+.parent {
+    height: 45vh;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-content: space-around;
+  }
+
+.shipwheel {
+    background-image: url('/src/shipwheel.png');
+    background-repeat: no-repeat;
+    position: absolute;
+    display: flex;
+    background-size: contain;
+    width: 20%;
+    height: 37%;
+    align-items: center;
+    animation: wheel 5s infinite linear;
+    transform-origin: center;
+    transform-box: fill-box;
+}
+/*
+.shipwheelstopped {
+    background-image: url('/src/shipwheel.png');
+    background-repeat: no-repeat;
+    position: absolute;
+
+    background-size: contain;
+    width: 20%;
+    height: 37%;
+}
+
+  
+.ship {
+    background-image: url('/src/ship.png');
+    background-repeat: no-repeat;
+    position: absolute;
+    background-size: 100%;
+    width: 20%;
+    height: 37%;
+
+    animation: sail 5s infinite linear;
+    transform-origin: center;
+    transform-box: fill-box;
+}
+  
+*/
+
+@keyframes wheel {
+    from {
+        transform: rotateZ(0deg);
+    }
+    to {
+        transform: rotateZ(360deg);
+    }
+}
+/* Use a media query to add a breakpoint at 800px: */
+@media screen and (max-width: 800px) {
+    .parent {
+      width: 100%; /* The width is 100%, when the viewport is 800px or smaller */
+    }
+  }
+

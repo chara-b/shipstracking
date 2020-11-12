@@ -1,23 +1,25 @@
-import logo from './logo.svg';
+import React from 'react';
 import './App.css';
+import LoadingScreen from './components/LoadingScreen/LoadingScreen';
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import MainScreen from './components/MainScreen/MainScreen';
+
 
 function App() {
+
+
+
+  
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    // Try changing to animationHasFinished={true}:
+    <div>
+      <Router>
+        <Switch>
+          <Route path="/" exact={true} component={LoadingScreen}/>
+          <Route path="/view" exact={true} component={MainScreen}/>
+        </Switch>
+      </Router>
     </div>
   );
 }
