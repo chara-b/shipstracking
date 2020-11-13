@@ -93,7 +93,7 @@ function readFileAsync(file) {
 
       reader.onload = () => {
 
-        chunk_features.length = 0;
+      //  chunk_features.length = 0;
         var chunk_array = reader.result.split('\n') // result is of type text we need an array of lines.. so we make the whole chunks which comes in this method into an array of lines
         chunk_array.forEach(element => { // for each line split on commas and create an array with all values of the line... the element represents the whole line here from the above array
         var row_values = element.split(',')
@@ -124,15 +124,27 @@ function readFileAsync(file) {
                     }
                 }
                 // check if exists and if yes disable its show_on_map property so the previous points don't show
-                if(chunk_features.length > 0){
-                    for(let elmt of chunk_features){
-                        if(elmt.properties.id === parseInt(row_values[0])){ // ean to id tou feature pou paei na bei tora ston chunk_array iparxei idi
-                            chunk_features[chunk_features.indexOf(elmt)].properties.show_on_map = false; // kane to show_on_map property false tou idi iparxontos oste na bei to neo me true sto property auto kai na einai to teleutaio pou tha fainetai ston xarti...
+              //  if(chunk_features.length > 0){
+                 //   for(let elmt of chunk_features){
+                  //      if(elmt.properties.id === parseInt(row_values[0])){ // ean to id tou feature pou paei na bei tora ston chunk_array iparxei idi
+                   //         chunk_features[chunk_features.indexOf(elmt)].properties.show_on_map = false; // kane to show_on_map property false tou idi iparxontos oste na bei to neo me true sto property auto kai na einai to teleutaio pou tha fainetai ston xarti...
                            // elmt.properties.show_on_map = false;
-                        }
+                    //    }
+                  //  }
+              //  }
+                function sameId(f) { // f stands for feature
+                    return f.properties.id === parseInt(row_values[0]);
+                  }
+                var foundfeaturewithsameid = chunk_features.find(sameId);
+                if(foundfeaturewithsameid){ // when the array at the beginning is empty this will be undefined and we want to run this loop only when it's not so it has something inside to find
+                    while(foundfeaturewithsameid.properties.show_on_map === true){
+                       
+                        chunk_features[ chunk_features.indexOf(foundfeaturewithsameid) ].properties.show_on_map = false;
+                        var foundfeaturewithsameid = chunk_features.find(sameId);
                     }
                 }
-
+               // foundfeaturewithsameid.properties.show_on_map = false;
+              //  chunk_features[ chunk_features.indexOf(foundfeaturewithsameid) ].properties.show_on_map = false;
                 chunk_features.push(feature) // add the new point with show_on_map property enabled
                 
               //  self.postMessage(feature);

@@ -180,9 +180,12 @@ var geojsonMarkerOptions = {
             // also if i had passed nothing as a 2nd argument there this hook would render every time a change occured
             // and if i had passed some state variables from useState hook this code here would render every single time 
             // one of those variables would change!
+  
+         //   masterLayerGroup.remove();
             mymap.remove();
-            
-        } 
+           // mymap.removeLayer(pathLine)
+          
+       } 
        
     },[filecontents]);
     

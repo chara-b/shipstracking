@@ -181,7 +181,7 @@ const TheNavBar = props => {
                       <Switch
                         checked={switchstate.checked}
                         onChange={ChangeThemeButtonClicked}
-                        color="primary"
+                        color = "primary"
                         name="checked"
                         inputProps={{ 'aria-label': 'primary checkbox' }}
                       />
