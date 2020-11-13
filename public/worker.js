@@ -132,16 +132,18 @@ function readFileAsync(file) {
                     //    }
                   //  }
               //  }
-                function sameId(f) { // f stands for feature
-                    return f.properties.id === parseInt(row_values[0]);
-                  }
-                var foundfeaturewithsameid = chunk_features.find(sameId);
+               // function sameId(f) { // f stands for feature
+                //    return f.properties.id === parseInt(row_values[0]);
+                //  }
+                var foundfeaturewithsameid = chunk_features.find(f => {
+                    return (f.properties.id === parseInt(row_values[0]) && f.properties.show_on_map === true);
+                });
                 if(foundfeaturewithsameid){ // when the array at the beginning is empty this will be undefined and we want to run this loop only when it's not so it has something inside to find
-                    while(foundfeaturewithsameid.properties.show_on_map === true){
+                  //  while(foundfeaturewithsameid.properties.show_on_map === true){
                        
                         chunk_features[ chunk_features.indexOf(foundfeaturewithsameid) ].properties.show_on_map = false;
-                        var foundfeaturewithsameid = chunk_features.find(sameId);
-                    }
+                      //  var foundfeaturewithsameid = chunk_features.find(sameId);
+                   // }
                 }
                // foundfeaturewithsameid.properties.show_on_map = false;
               //  chunk_features[ chunk_features.indexOf(foundfeaturewithsameid) ].properties.show_on_map = false;
