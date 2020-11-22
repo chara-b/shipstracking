@@ -35,29 +35,21 @@ const TheMap = props => {
     const classes = useStyles();
     const [filecontents, setFilecontents] = useState([]);
     const [extractedValues, setExtractedFeatureClickedValues] = useState();
+    const [removePaths, setRemovePaths] = useState(false);
 
     useEffect(() => {
 
        // console.log(filecontents)
 
-        var mymap = L.map('mapid').setView([36.97554, 12.57211], 5);
+       var mymap = L.map('mapid').setView([36.97554, 12.57211], 5);
 
-
-        L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-        }).addTo(mymap);
-
-  
+       L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+       attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+       }).addTo(mymap);
+   
 
 function whenClicked(e) { // auti i methodos tha pigenei ta data tou feature pou patithike ston xarti stin karta deksia stin othoni
-    if (mymap.hasLayer(pathLine)){
-        mymap.removeLayer(pathLine)
-    }
-    // remove previous clicked path by deleting its whole layer of the features of the path...
-    if (mymap.hasLayer(SameFeaturesLayer)){
-        SameFeaturesLayer.remove();
-    }
-    // console.log(e.target.feature);
+     // console.log(e.target.feature);
     // group all features with same id together and then create an array with their coordinations in such way so that the polyline accepts them
     var groupedFeatures = groupBy(filecontents, 'id', e.target.feature.properties.id); // group first parameter's array according to value id of 2nd parameter...
     var c = [];  // holds the coordinates in a form that a polyline needs
@@ -72,7 +64,13 @@ function whenClicked(e) { // auti i methodos tha pigenei ta data tou feature pou
     mymap.fitBounds(pathLine.getBounds());
 
  
-
+// groupedfeatures array has a key and then this key's values are all the same features that we re found
+// the name of that key is the id that obviously all the same features have that's why inside geoJSON layer
+// i added an array with an index of target.feature.properties.id because we ask the grouped features from the 
+// grouped features array where the name of the key equals the id that was asked when user clicked and then 
+// the click event has that id we need to search for... FYI this array has only one record because it groups over a specific id
+// but it also adds as key that id so in order to grab all its contents we need to specify that key name although
+// that's the only key it has!
         var SameFeaturesLayer = L.geoJSON(groupedFeatures[e.target.feature.properties.id],{
             pointToLayer: function (feature, latlng) {
                 return L.circleMarker(latlng, geojsonMarkerOptions).bindTooltip(feature.properties.name).openTooltip();
@@ -104,16 +102,26 @@ function whenClicked(e) { // auti i methodos tha pigenei ta data tou feature pou
                 return feature.properties.show_on_map;
             },
         }).addTo(mymap);
+
         masterLayerGroup.addLayer(SameFeaturesLayer);
         masterLayerGroup.addLayer(pathLine);
+
+
+
+/*
+if(removePaths === true){
+    if (mymap.hasLayer(pathLine)){
+        mymap.removeLayer(pathLine) 
+        masterLayerGroup.removeLayer(pathLine);
+    }
+    if (mymap.hasLayer(SameFeaturesLayer)){
+        mymap.removeLayer(SameFeaturesLayer)
+        masterLayerGroup.removeLayer(SameFeaturesLayer);
+    }      
+}
+*/
 }
 
-
-
-
-if (mymap.hasLayer(allFeaturesLayer)){
-    allFeaturesLayer.remove();
-}
 /*
 var myIcon = L.icon({
     iconUrl: './ship.png',
@@ -165,7 +173,11 @@ var geojsonMarkerOptions = {
             },
         }
         ).addTo(mymap);
-
+/*
+        if (mymap.hasLayer(allFeaturesLayer)){
+            allFeaturesLayer.remove();
+        }
+*/
         var masterLayerGroup = L.layerGroup().addTo(mymap);
         masterLayerGroup.addLayer(allFeaturesLayer);
 
@@ -187,9 +199,17 @@ var geojsonMarkerOptions = {
           
        } 
        
-    },[filecontents]);
+    },[filecontents, removePaths]);
     
-  
+function removeLineofPath() {
+    if(removePaths === false){
+        setRemovePaths(true)   
+    } else {
+        setRemovePaths(false)   
+    }
+}
+
+
 const parseFile = function (files) {
 
     var worker;
@@ -241,6 +261,7 @@ const parseFile = function (files) {
             */
                 
         };
+
     
 function groupBy(objectArray, property, id) { // group by same id so when click on the map on a feauture 
     // with a specific id all the rest points of same id appear with a line as the path we want to depict
@@ -263,7 +284,7 @@ function groupBy(objectArray, property, id) { // group by same id so when click 
     return (
         <div>
         <div  id="mapid" className={classes.map}></div>
-        <Button style={{display: 'flex', float: 'right', backgroundColor: userbuttoncolor, marginRight: '150px', marginTop: '10px'}}>Remove all paths</Button>
+        <Button onClick={removeLineofPath} style={{display: 'flex', float: 'right', backgroundColor: userbuttoncolor, marginRight: '150px', marginTop: '10px'}}>Remove all paths</Button>
        {/* <input style={{display: 'flex', marginLeft: '40px'}} type="file" name="csvinput" id="csvinput" onChange={(e) => parseFile(e.target.files) }/>*/}
        <label className="custom-file-upload" style={{backgroundColor: userbuttoncolor}}>
             <input type="file" id="file-upload" name="csvinput" id="csvinput" onChange={(e) => parseFile(e.target.files) }/>

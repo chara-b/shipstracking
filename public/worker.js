@@ -93,7 +93,7 @@ function readFileAsync(file) {
 
       reader.onload = () => {
 
-      //  chunk_features.length = 0;
+        chunk_features.length = 0;
         var chunk_array = reader.result.split('\n') // result is of type text we need an array of lines.. so we make the whole chunks which comes in this method into an array of lines
         chunk_array.forEach(element => { // for each line split on commas and create an array with all values of the line... the element represents the whole line here from the above array
         var row_values = element.split(',')
@@ -156,8 +156,8 @@ function readFileAsync(file) {
      
       
         })
-
-        self.postMessage(chunk_features);
+       
+     self.postMessage(chunk_features);
     // self.postMessage(chunk_array)
         resolve(true); // resolve otan i onload teleiosei
       };
@@ -166,9 +166,21 @@ function readFileAsync(file) {
   
       reader.readAsText(file); // diabase to chunk kai steilto stin onload na kanei to parsing...
     })
+
   }
 // checkIfFeatureExistsToDisableShowOnMapPropertyAndThenPushNewFeatureIn
 //function DisablePreviousFeaturesShowOnMapProperty(id) {
     
     
 //}
+
+
+/*
+function timedCount() {
+  i = i + 1;
+  postMessage(i);
+  setTimeout("timedCount()",500);
+}
+
+timedCount();
+*/
