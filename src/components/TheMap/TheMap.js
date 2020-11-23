@@ -30,6 +30,7 @@ const useStyles = makeStyles({
 
 const TheMap = props => {
     const {usercolor, setUserColorValue} = useContext(myContext);
+    const {userlettercolor, setUserLetterColor} = useContext(myContext);
     const {userbuttoncolor, setUserButtonColor} = useContext(myContext);
     const {featureclickedonmap, setFeatureclickedonmap} = useContext(myContext);
     const classes = useStyles();
@@ -37,16 +38,19 @@ const TheMap = props => {
     const [extractedValues, setExtractedFeatureClickedValues] = useState();
     const [removePaths, setRemovePaths] = useState(false);
 
+    
     useEffect(() => {
 
        // console.log(filecontents)
-
+     //  var container = L.DomUtil.get('mymap');
+    //   if(container !== null){
+    //    container._leaflet_id = null;
        var mymap = L.map('mapid').setView([36.97554, 12.57211], 5);
 
        L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
        }).addTo(mymap);
-   
+  // }
 
 function whenClicked(e) { // auti i methodos tha pigenei ta data tou feature pou patithike ston xarti stin karta deksia stin othoni
      // console.log(e.target.feature);
@@ -185,7 +189,7 @@ var geojsonMarkerOptions = {
         controlLayers.addOverlay(masterLayerGroup, 'General Cargo types only (click to show/hide on the map)');
  
 
-        return () => { // this return here is actually a way to clean my previous map before rendering it again
+       return () => { // this return here is actually a way to clean my previous map before rendering it again
             // otherwise it'll throw an error of saying that my map container is already initialized!
             // The [] as a 2nd argument passed here in useEffect Hook indicates that this useEffect Hook is only
             // gonna render once the component loads and after it is mounted this code here is not gonna render again
@@ -194,10 +198,10 @@ var geojsonMarkerOptions = {
             // one of those variables would change!
   
          //   masterLayerGroup.remove();
-            mymap.remove();
+        mymap.remove();
            // mymap.removeLayer(pathLine)
           
-       } 
+      } 
        
     },[filecontents, removePaths]);
     
@@ -228,6 +232,16 @@ const parseFile = function (files) {
             // pou xreiazomaste na exoume prosbasi apo tin methodo auti giati apo tin filecontents akouei o xartis
             // diladi pexoume me closures i onload den blepei tin embeleia tis pio pano methodou para mono tin embeleia
             // tis methodou stin opoia anikei kai auti einai i embeleia tis methodou parseFile
+            if(event.data.lenght === 1){
+                var foundfeaturewithsameid = filecontents.find(f => {
+                    return (f.properties.id === event.data.properties.id && f.properties.show_on_map === true);
+                });
+                if(foundfeaturewithsameid){ // when the array at the beginning is empty this will be undefined and we want to run this loop only when it's not so it has something inside to find         
+                   
+                    filecontents[ filecontents.indexOf(foundfeaturewithsameid) ].properties.show_on_map = false;
+    
+                }
+            }
             setFilecontents(filecontents => filecontents.concat(event.data));
            
               
@@ -284,9 +298,9 @@ function groupBy(objectArray, property, id) { // group by same id so when click 
     return (
         <div>
         <div  id="mapid" className={classes.map}></div>
-        <Button onClick={removeLineofPath} style={{display: 'flex', float: 'right', backgroundColor: userbuttoncolor, marginRight: '150px', marginTop: '10px'}}>Remove all paths</Button>
+        <Button onClick={removeLineofPath} style={{display: 'flex', float: 'right', backgroundColor: userbuttoncolor, color: userlettercolor, marginRight: '150px', marginTop: '10px'}}>Remove all paths</Button>
        {/* <input style={{display: 'flex', marginLeft: '40px'}} type="file" name="csvinput" id="csvinput" onChange={(e) => parseFile(e.target.files) }/>*/}
-       <label className="custom-file-upload" style={{backgroundColor: userbuttoncolor}}>
+       <label className="custom-file-upload" style={{backgroundColor: userbuttoncolor, color: userlettercolor}}>
             <input type="file" id="file-upload" name="csvinput" id="csvinput" onChange={(e) => parseFile(e.target.files) }/>
             <i className="fa fa-cloud-upload"></i> Upload csv Dataset
         </label>

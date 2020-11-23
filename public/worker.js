@@ -69,10 +69,16 @@ self.addEventListener('message', async (event) => {
              //}
              // currentChunk++; 
          }
+         var thisisthefirstchunk = false;
          for(let i = 0; i < chunks.length; i++) { // apothikeuo ta chunks pou egine cut to arxeio se pinaka kai
             // stelno ena - ena meta gia diabasma sti methodo ... ean den to ekana auto tote tha mou diabaze toses
             // fores osa ta chunks ta data apo to teleutaio mono chunk pou tha tou estelna na diabasei...
-            await readFileAsync(chunks[i]);
+            if(i === 0){
+              thisisthefirstchunk = true
+            } else {
+              thisisthefirstchunk = false
+            }
+            await readFileAsync(chunks[i], thisisthefirstchunk);
          }
         } catch(err) {
             console.log(err);
@@ -85,7 +91,7 @@ self.addEventListener('message', async (event) => {
 })
 
 
-function readFileAsync(file) {
+function readFileAsync(file, isfirstchunk) {
 
     return new Promise((resolve, reject) => {
       let reader = new FileReader();
@@ -135,6 +141,7 @@ function readFileAsync(file) {
                // function sameId(f) { // f stands for feature
                 //    return f.properties.id === parseInt(row_values[0]);
                 //  }
+          if(isfirstchunk === true) {
                 var foundfeaturewithsameid = chunk_features.find(f => {
                     return (f.properties.id === parseInt(row_values[0]) && f.properties.show_on_map === true);
                 });
@@ -148,16 +155,24 @@ function readFileAsync(file) {
                // foundfeaturewithsameid.properties.show_on_map = false;
               //  chunk_features[ chunk_features.indexOf(foundfeaturewithsameid) ].properties.show_on_map = false;
                 chunk_features.push(feature) // add the new point with show_on_map property enabled
-                
+            
               //  self.postMessage(feature);
             }
+            if(isfirstchunk === false){
+              console.log('sending one feature at a time with a 3 sec waiting in between enabled...')
+              setTimeout(function(){ self.postMessage(feature); }, 3000);
+            }
+          }
 
 
      
       
         })
-       
-     self.postMessage(chunk_features);
+       if(isfirstchunk === true) {
+        self.postMessage(chunk_features);
+       }
+     
+     
     // self.postMessage(chunk_array)
         resolve(true); // resolve otan i onload teleiosei
       };
