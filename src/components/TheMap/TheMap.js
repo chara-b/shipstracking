@@ -133,7 +133,7 @@ var myIcon = L.icon({
 });
 */
 var geojsonMarkerOptions = {
-    radius: 8,
+    radius: 5,
     fillColor: "#2b3740",
     color: "#000",
     weight: 1,
@@ -232,7 +232,7 @@ const parseFile = function (files) {
             // pou xreiazomaste na exoume prosbasi apo tin methodo auti giati apo tin filecontents akouei o xartis
             // diladi pexoume me closures i onload den blepei tin embeleia tis pio pano methodou para mono tin embeleia
             // tis methodou stin opoia anikei kai auti einai i embeleia tis methodou parseFile
-            if(event.data.lenght === 1){
+            if(!Array.isArray(event.data)){
                 var foundfeaturewithsameid = filecontents.find(f => {
                     return (f.properties.id === event.data.properties.id && f.properties.show_on_map === true);
                 });
