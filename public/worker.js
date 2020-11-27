@@ -1,7 +1,7 @@
 
 // Respond to message from parent thread
 
-self.addEventListener('message', async (event) => {
+self.addEventListener('message', (event) => {
     console.log('worker is running ... Now parsing ...')
     console.log('ev', event.data)
 
@@ -22,11 +22,11 @@ self.addEventListener('message', async (event) => {
     }); 
     */
    try {
-
+  
 
     //Parse large file in to small chunks
-   // var chunkSize = 1024 * 1024 * 1; //1MB Chunk size
-   var chunkSize = 300;
+   // var chunkSize = 1024 * 1024 * 1; //1MB Chunk size 103bytes i mia grammi
+   var chunkSize =  1024 * 1024 * 1 ;
     var file = event.data;
     var fileSize = file.size;
     var currentChunk = 1;
@@ -36,62 +36,95 @@ self.addEventListener('message', async (event) => {
     console.log('Total chunks: ', totalChunks) 
     console.log('Chunk size: ', chunkSize)
 
-    while (currentChunk <= totalChunks) {
-
-        var offset = (currentChunk-1) * chunkSize;
+    for(let i = 1; i <= totalChunks; i++) {
+     
+        var offset = (i-1) * chunkSize; // i represents current chunk number
         var currentFilePart = event.data.slice(offset, (offset+chunkSize));
 
-       
-        console.log('Chunk ', currentChunk, ' created...');
-     //   console.log('Current chunk data', currentFilePart);
+     
+        console.log('Chunk ', i, ' created...');
+
+
+
+        let reader = new FileReader();
+        var chunk_features = [];
+     //   reader.readAsText(currentFilePart); 
+        reader.onload = () => {
   
-       // let row = await readFileAsync(currentFilePart);
-      //  var reader = new FileReader();
-      chunks.push(currentFilePart)
-    //  if(!row){
-       // console.log(chunks)
-        currentChunk++; 
-    //  }
-        
-         // start reading the file. When it is done, calls the onload event defined above.
-       //  reader.readAsText(currentFilePart);
+         // chunk_features.length = 0;
+          var chunk_array = reader.result.split('\n') // result is of type text we need an array of lines.. so we make the whole chunks which comes in this method into an array of lines
+          chunk_array.forEach(element => { // for each line split on commas and create an array with all values of the line... the element represents the whole line here from the above array
+          var row_values = element.split(',')
+         
+              if(row_values.length === 11) { // some lines while cutting in chunks were splitted in half and first half was saved in previous chunk and second half in next chunk which makes it hard to create a feature out of this case so we exclude them, these lines are of a length less than all the features starting from 0 to 10 so they are less than 11 items in the values array and they are found only at the point of cutting into chunks so it is the last line of the chunk only which causes this bad cut into chunks
+  
+  
+                  var feature = {
+                      "type": "Feature" ,
+                      "properties": {
+                          "id": parseInt(row_values[0]),
+                          "imo": parseInt(row_values[1]),
+                          "lat": parseFloat(row_values[2]), 
+                          "lng": parseFloat(row_values[3]),
+                          "course": parseInt(row_values[4]),
+                          "heading": parseInt(row_values[5]),
+                          "speed": parseInt(row_values[6]),
+                          "timestamp": new Date(row_values[7]),
+                          "name": row_values[8],
+                          "type_name": row_values[9],
+                          "destination": row_values[10],
+                          "show_on_map": true,
+                      },
+                      "geometry": {
+                          "type": "Point",
+                          "coordinates":  [parseFloat(row_values[3]), parseFloat(row_values[2])] ,    
+                          
+                      }
+                  }
+               
+          //  if(i === 1) {
+                  var foundfeaturewithsameid = chunk_features.find(f => {
+                      return (f.properties.id === parseInt(row_values[0]) && f.properties.show_on_map === true);
+                  });
+                  if(foundfeaturewithsameid){ // when the array at the beginning is empty this will be undefined and we want to run this loop only when it's not so it has something inside to find
+                         
+                          chunk_features[ chunk_features.indexOf(foundfeaturewithsameid) ].properties.show_on_map = false;
+               
+                  }
+                chunk_features.push(feature) // add the new point with show_on_map property enabled
+        //      }
+            //  if(i !== 0){
 
-       //  reader.onload = () => { 
-        //   var chunk_array = reader.result.split('\n') // result is of type text we need an array of lines
-         //   chunk_array.forEach(element => { 
-           //     const row = element.split(',')
-              //  self.postMessage(row); // eslint-disable-line no-restricted-globals 
-               // console.log(row)
-           // });
-        
-
-           // for(let i = 0; i < chunk_array.length; i++) {
-             //   self.postMessage(reader.result[i]); // eslint-disable-line no-restricted-globals 
-             //}
-             // currentChunk++; 
-         }
-         var thisisthefirstchunk = false;
-         for(let i = 0; i < chunks.length; i++) { // apothikeuo ta chunks pou egine cut to arxeio se pinaka kai
-            // stelno ena - ena meta gia diabasma sti methodo ... ean den to ekana auto tote tha mou diabaze toses
-            // fores osa ta chunks ta data apo to teleutaio mono chunk pou tha tou estelna na diabasei...
-            if(i === 0){
-              thisisthefirstchunk = true
-            } else {
-              thisisthefirstchunk = false
+              //  console.log('sending one feature at a time with a 3 sec waiting in between enabled...')
+              //  setTimeout(function(){ self.postMessage(feature); }, 5000);
+   
+             // }
             }
-            await readFileAsync(chunks[i], thisisthefirstchunk);
+  
+  
+       
+        
+          })
+         // setTimeout(function(){ self.postMessage(chunk_features); }, 5000);
+        // if(i === 0) {
+         self.postMessage(chunk_features);
+     //   }
+       
+        };
+      
+    
+       reader.readAsText(currentFilePart); // diabase to chunk kai steilto stin onload na kanei to parsing...
+      
+     
          }
+     
         } catch(err) {
             console.log(err);
           }
-    
- 
-        
-   // }
 
 })
 
-
+/*
 function readFileAsync(file, isfirstchunk) {
 
     return new Promise((resolve, reject) => {
@@ -161,7 +194,8 @@ function readFileAsync(file, isfirstchunk) {
             }
             if(isfirstchunk === false){
               console.log('sending one feature at a time with a 3 sec waiting in between enabled...')
-              setTimeout(function(){ self.postMessage(feature); }, 3000);
+              setTimeout(function(){ self.postMessage(feature); }, 5000);
+           //  self.postMessage(feature);
             }
           }
 
@@ -184,6 +218,7 @@ function readFileAsync(file, isfirstchunk) {
     })
 
   }
+  */
 // checkIfFeatureExistsToDisableShowOnMapPropertyAndThenPushNewFeatureIn
 //function DisablePreviousFeaturesShowOnMapProperty(id) {
     

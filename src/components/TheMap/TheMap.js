@@ -1,5 +1,5 @@
 import { Button, makeStyles } from '@material-ui/core';
-import React, { useEffect, useRef, useState, createContext, useContext } from 'react';
+import React, { useEffect, useRef, useState, createContext, useContext, useMemo, useCallback } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import './TheMap.css';
@@ -37,13 +37,13 @@ const TheMap = props => {
     const [filecontents, setFilecontents] = useState([]);
     const [extractedValues, setExtractedFeatureClickedValues] = useState();
     const [removePaths, setRemovePaths] = useState(false);
-
-    
+   // let mapcontainerref = useRef()
+    // const mapcontainer = mapcontainerref.current;
     useEffect(() => {
 
        // console.log(filecontents)
-     //  var container = L.DomUtil.get('mymap');
-    //   if(container !== null){
+  
+   // if(L.DomUtil.get('mymap')._leaflet_id === null){
     //    container._leaflet_id = null;
        var mymap = L.map('mapid').setView([36.97554, 12.57211], 5);
 
@@ -189,19 +189,19 @@ var geojsonMarkerOptions = {
         controlLayers.addOverlay(masterLayerGroup, 'General Cargo types only (click to show/hide on the map)');
  
 
-       return () => { // this return here is actually a way to clean my previous map before rendering it again
+      return () => { // this return here is actually a way to clean my previous map before rendering it again
             // otherwise it'll throw an error of saying that my map container is already initialized!
             // The [] as a 2nd argument passed here in useEffect Hook indicates that this useEffect Hook is only
             // gonna render once the component loads and after it is mounted this code here is not gonna render again
             // also if i had passed nothing as a 2nd argument there this hook would render every time a change occured
             // and if i had passed some state variables from useState hook this code here would render every single time 
             // one of those variables would change!
-  
-         //   masterLayerGroup.remove();
-        mymap.remove();
-           // mymap.removeLayer(pathLine)
           
-      } 
+         //   masterLayerGroup.remove();
+      mymap.remove();
+      //  mymap.removeLayer(SameFeaturesLayer)
+          
+  } 
        
     },[filecontents, removePaths]);
     
@@ -214,7 +214,7 @@ function removeLineofPath() {
 }
 
 
-const parseFile = function (files) {
+const parseFile = (files) => {
 
     var worker;
         if (typeof(Worker) !== "undefined") {
@@ -232,18 +232,21 @@ const parseFile = function (files) {
             // pou xreiazomaste na exoume prosbasi apo tin methodo auti giati apo tin filecontents akouei o xartis
             // diladi pexoume me closures i onload den blepei tin embeleia tis pio pano methodou para mono tin embeleia
             // tis methodou stin opoia anikei kai auti einai i embeleia tis methodou parseFile
+            
+           /* 
             if(!Array.isArray(event.data)){
                 var foundfeaturewithsameid = filecontents.find(f => {
                     return (f.properties.id === event.data.properties.id && f.properties.show_on_map === true);
                 });
                 if(foundfeaturewithsameid){ // when the array at the beginning is empty this will be undefined and we want to run this loop only when it's not so it has something inside to find         
                    
-                    filecontents[ filecontents.indexOf(foundfeaturewithsameid) ].properties.show_on_map = false;
+                filecontents[ filecontents.indexOf(foundfeaturewithsameid) ].properties.show_on_map = false;
     
                 }
-            }
-            setFilecontents(filecontents => filecontents.concat(event.data));
-           
+            } 
+            */
+         //   setFilecontents(filecontents => filecontents.concat(event.data))
+         setFilecontents(event.data)
               
             if(!event) { // ean den erthei kapoio feature apo ton worker tote kleise ton worker gt teleiose i douleia tou...
                 worker.terminate();
@@ -252,7 +255,7 @@ const parseFile = function (files) {
             }
         }
             
-         
+         console.log(filecontents)
       } else {
         alert('Sorry your browser doesn\'t support WebWorkers therefore this app can\'t run...');
       }
@@ -297,7 +300,7 @@ function groupBy(objectArray, property, id) { // group by same id so when click 
     /////////  kai nomizo oti exo balei 2 return gia tin groupBy !!!!!!! ///////////////////////////////
     return (
         <div>
-        <div  id="mapid" className={classes.map}></div>
+        <div id="mapid" className={classes.map}></div>
         <Button onClick={removeLineofPath} style={{display: 'flex', float: 'right', backgroundColor: userbuttoncolor, color: userlettercolor, marginRight: '150px', marginTop: '10px'}}>Remove all paths</Button>
        {/* <input style={{display: 'flex', marginLeft: '40px'}} type="file" name="csvinput" id="csvinput" onChange={(e) => parseFile(e.target.files) }/>*/}
        <label className="custom-file-upload" style={{backgroundColor: userbuttoncolor, color: userlettercolor}}>
