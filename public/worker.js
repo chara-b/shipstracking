@@ -99,6 +99,7 @@ self.addEventListener('message', (event) => {
               //  setTimeout(function(){ self.postMessage(feature); }, 5000);
    
              // }
+             self.postMessage(chunk_features);
             }
   
   
@@ -106,9 +107,9 @@ self.addEventListener('message', (event) => {
         
           })
          // setTimeout(function(){ self.postMessage(chunk_features); }, 5000);
-        // if(i === 0) {
-         self.postMessage(chunk_features);
-     //   }
+       //  if(i === 1) {
+        // self.postMessage(chunk_features);
+      //   }
        
         };
       
