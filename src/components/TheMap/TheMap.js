@@ -225,35 +225,42 @@ const parseFile = (files) => {
         worker.postMessage(files[0]);
         worker.onerror = (err) => console.log(err);
     
-        worker.onmessage = (event) => {
-            console.log(event.data) // incoming feature from the worker is printed on the console here!
-           // features.length = 0 // prepei na ton katharizoume prin baloume to epomeno feature mesa tou gt
-            // an den to kanoume otan tha ginei concat pio kato me to filecontents pou einai allis embeleias
-            // pou xreiazomaste na exoume prosbasi apo tin methodo auti giati apo tin filecontents akouei o xartis
-            // diladi pexoume me closures i onload den blepei tin embeleia tis pio pano methodou para mono tin embeleia
-            // tis methodou stin opoia anikei kai auti einai i embeleia tis methodou parseFile
-            
-           /* 
-            if(!Array.isArray(event.data)){
-                var foundfeaturewithsameid = filecontents.find(f => {
-                    return (f.properties.id === event.data.properties.id && f.properties.show_on_map === true);
-                });
-                if(foundfeaturewithsameid){ // when the array at the beginning is empty this will be undefined and we want to run this loop only when it's not so it has something inside to find         
-                   
-                filecontents[ filecontents.indexOf(foundfeaturewithsameid) ].properties.show_on_map = false;
-    
-                }
-            } 
-            */
-         //   setFilecontents(filecontents => filecontents.concat(event.data))
-         setFilecontents(event.data)
-              
-            if(!event) { // ean den erthei kapoio feature apo ton worker tote kleise ton worker gt teleiose i douleia tou...
-                worker.terminate();
-                worker = undefined; // If you set the worker variable to undefined, after it has been terminated, you can reuse the code
+      
+
+            worker.onmessage = (event) => {
+                console.log(event.data) // incoming feature from the worker is printed on the console here!
+               // features.length = 0 // prepei na ton katharizoume prin baloume to epomeno feature mesa tou gt
+                // an den to kanoume otan tha ginei concat pio kato me to filecontents pou einai allis embeleias
+                // pou xreiazomaste na exoume prosbasi apo tin methodo auti giati apo tin filecontents akouei o xartis
+                // diladi pexoume me closures i onload den blepei tin embeleia tis pio pano methodou para mono tin embeleia
+                // tis methodou stin opoia anikei kai auti einai i embeleia tis methodou parseFile
                 
+               /* 
+                if(!Array.isArray(event.data)){
+                    var foundfeaturewithsameid = filecontents.find(f => {
+                        return (f.properties.id === event.data.properties.id && f.properties.show_on_map === true);
+                    });
+                    if(foundfeaturewithsameid){ // when the array at the beginning is empty this will be undefined and we want to run this loop only when it's not so it has something inside to find         
+                       
+                    filecontents[ filecontents.indexOf(foundfeaturewithsameid) ].properties.show_on_map = false;
+        
+                    }
+                } 
+                */
+             //   setFilecontents(filecontents => filecontents.concat(event.data))
+            // setTimeout(function(){  setFilecontents(event.data) }, 5000);
+             setFilecontents(event.data) 
+                  
+                if(!event) { // ean den erthei kapoio feature apo ton worker tote kleise ton worker gt teleiose i douleia tou...
+                    worker.terminate();
+                    worker = undefined; // If you set the worker variable to undefined, after it has been terminated, you can reuse the code
+                    
+                }
             }
-        }
+
+
+    
+
             
          console.log(filecontents)
       } else {

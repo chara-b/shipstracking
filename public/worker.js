@@ -26,7 +26,7 @@ self.addEventListener('message', (event) => {
 
     //Parse large file in to small chunks
    // var chunkSize = 1024 * 1024 * 1; //1MB Chunk size 103bytes i mia grammi
-   var chunkSize =  1024 * 1024 * 1 ;
+   var chunkSize =  1024  ;
     var file = event.data;
     var fileSize = file.size;
     var currentChunk = 1;
