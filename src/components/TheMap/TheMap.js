@@ -82,7 +82,7 @@ function whenClicked(e) { // auti i methodos tha pigenei ta data tou feature pou
             },
             onEachFeature:  function (feature, layer) {
 
-                var popupContent = "<table>";
+                var popupContent = '<h1><b>Navigation: </b>'+ feature.properties['navigation'] +'</h1><table>';
                 for (var p in feature.properties) {
                     if(p !== "show_on_map"){
                     popupContent += "<tr><td><b>" + p + "<b>:</b>" + "</b></td><td>"+ feature.properties[p] + "</td></tr>";
@@ -146,7 +146,7 @@ var geojsonMarkerOptions = {
                 // return L.marker(latlng, {icon: myIcon});
             },
             onEachFeature:  function (feature, layer) {
-                var popupContent = '<table>';
+                var popupContent = '<h1><b>Navigation: </b>'+ feature.properties['navigation'] +'</h1><table>';
                 for (var p in feature.properties) {
                     if(p !== "show_on_map"){
                     popupContent += '<tr><td><b>' + p + '<b>:</b>' + '</b></td><td>'+ feature.properties[p] + '</td></tr>';

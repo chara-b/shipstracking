@@ -56,7 +56,7 @@ self.addEventListener('message', (event) => {
           chunk_array.forEach(element => { // for each line split on commas and create an array with all values of the line... the element represents the whole line here from the above array
           var row_values = element.split(',')
          
-              if(row_values.length === 11) { // some lines while cutting in chunks were splitted in half and first half was saved in previous chunk and second half in next chunk which makes it hard to create a feature out of this case so we exclude them, these lines are of a length less than all the features starting from 0 to 10 so they are less than 11 items in the values array and they are found only at the point of cutting into chunks so it is the last line of the chunk only which causes this bad cut into chunks
+              if(row_values.length === 12) { // some lines while cutting in chunks were splitted in half and first half was saved in previous chunk and second half in next chunk which makes it hard to create a feature out of this case so we exclude them, these lines are of a length less than all the features starting from 0 to 10 so they are less than 11 items in the values array and they are found only at the point of cutting into chunks so it is the last line of the chunk only which causes this bad cut into chunks
   
   
                   var feature = {
@@ -73,6 +73,7 @@ self.addEventListener('message', (event) => {
                           "name": row_values[8],
                           "type_name": row_values[9],
                           "destination": row_values[10],
+                          "navigation": row_values[11],
                           "show_on_map": true,
                       },
                       "geometry": {

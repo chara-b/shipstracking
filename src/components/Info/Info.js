@@ -52,14 +52,14 @@ const Info = props => {
     
 
     return (
-  <div style={{height: !isActive ? '55%' : '70%'}} className={classes.root}>    
+  <div style={{height: !isActive ? '56%' : '75%'}} className={classes.root}>    
     <Card style={{backgroundColor: usercolor, color: userlettercolor}}>
         <CardMedia
           className={classes.media}
        //   image="../ship.png"
           title="Ship Info"
         > LAST POSITION INFO </CardMedia>
-        <CardContent style={{height: !isActive ? '200px' : '350px', overflow: !isActive ? 'hidden' : 'visible'}}>   
+        <CardContent style={{height: !isActive ? '200px' : '390px', overflow: !isActive ? 'hidden' : 'visible'}}>   
           <div>
           {Parser(featureclickedonmap).slice(1, -1)}
           </div>
