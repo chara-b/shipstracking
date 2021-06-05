@@ -67,7 +67,7 @@ function whenClicked(e) { // auti i methodos tha pigenei ta data tou feature pou
         var y = elmt.properties.lng;
         counter++;
       //  current_label = elmt.properties.navigation;
-        p.push([x, y]); // holds the coordinates in a form that a polyline needs in order to be drawn
+      //  p.push([x, y]); // holds the coordinates in a form that a polyline needs in order to be drawn
         if(elmt.properties.navigation === current_label){
             c.push([x, y]); // holds the coordinates in a form that a polyline needs in order to be drawn
             if(counter === groupedFeatures[e.target.feature.properties.id].length){ // this is needed to take into consideration of adding the last group of same labels in the segments array of the polyline of the map
@@ -112,13 +112,13 @@ function whenClicked(e) { // auti i methodos tha pigenei ta data tou feature pou
         });
        // L.polyline(segment).addTo(map);
     });
-
+  //  var polyline2 = L.polyline(p).setStyle({
+  //      color: 'red'
+  //  }).addTo(mymap);
     var polyline = L.polyline(c).setStyle({
         color: 'dodgerblue'
     }).addTo(mymap);
-  //  var polyline2 = L.polyline(p).setStyle({
-  //      color: 'dodgerblue'
-  //  }).addTo(mymap);
+
 
   //  mymap.fitBounds(polyline.getBounds());
  
