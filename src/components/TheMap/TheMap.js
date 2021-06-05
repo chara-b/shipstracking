@@ -55,31 +55,45 @@ const TheMap = props => {
 function whenClicked(e) { // auti i methodos tha pigenei ta data tou feature pou patithike ston xarti stin karta deksia stin othoni
      // console.log(e.target.feature);
     // group all features with same id together and then create an array with their coordinations in such way so that the polyline accepts them
+    var current_label = 'A';
+    var polyLineArray = [];
     var groupedFeatures = groupBy(filecontents, 'id', e.target.feature.properties.id); // group first parameter's array according to value id of 2nd parameter...
     var c = [];  // holds the coordinates in a form that a polyline needs
     for(let elmt of groupedFeatures[e.target.feature.properties.id]){
         groupedFeatures[e.target.feature.properties.id][groupedFeatures[e.target.feature.properties.id].indexOf(elmt)].properties.show_on_map = true;
         var x = elmt.properties.lat;
         var y = elmt.properties.lng;
-        c.push([x, y]); // holds the coordinates in a form that a polyline needs in order to be drawn
+        if(elmt.properties.navigation === current_label){
+            c.push([x, y]); // holds the coordinates in a form that a polyline needs in order to be drawn
+        } else {
+            var pathLine = L.polyline(c).addTo(mymap)
+            polyLineArray.push(pathLine);
+            c.length = 0; // c array is getting filled with all points under same label which form the whole segment
+            // and when we find the whole segment we need to empty this array so it can store the next segment 
+            // before emptying it we save its segment inside the polyLineArray and slowly slowly each single segment
+            // that we form will end up form the whole polyline at the end !
+            current_label = elmt.properties.navigation;
+            c.push([x, y]);
+        }
+        
     }
 
-    var pathLine = L.polyline(c).addTo(mymap)
+
    // mymap.fitBounds(pathLine.getBounds());
     pathLine.on('mouseover', function(e) {
         var layer = e.target;
 
         layer.setStyle({
             color: 'yellow',
-            weight: 2,
+            weight: 10,
             opacity: 1
         });
     });
-    var highlight = {
-        'fillColor': 'yellow',
-        'weight': 2,
-        'opacity': 1
-    };
+ //   var highlight = {
+  //      'fillColor': 'purple',
+ //       'weight': 2,
+ //       'opacity': 1
+ //   };
 // groupedfeatures array has a key and then this key's values are all the same features that we re found
 // the name of that key is the id that obviously all the same features have that's why inside geoJSON layer
 // i added an array with an index of target.feature.properties.id because we ask the grouped features from the 
@@ -93,7 +107,6 @@ function whenClicked(e) { // auti i methodos tha pigenei ta data tou feature pou
               //  return L.marker(latlng);
             },
             onEachFeature:  function (feature, layer) {
-
                 var popupContent = '<h1><b>Navigation: </b>'+ feature.properties['navigation'] +'</h1><table>';
                 for (var p in feature.properties) {
                     if(p !== "show_on_map" && p !== "navigation"){
@@ -106,10 +119,10 @@ function whenClicked(e) { // auti i methodos tha pigenei ta data tou feature pou
                     layer.on({
                         click: whenClicked
                     });
-                    layer.on("mouseover", function (e) { 
+                  //  layer.on("mouseover", function (e) { 
                      //  stateLayer.setStyle(style); //resets layer colors
-                        layer.setStyle(highlight);  //highlights selected.
-                    });
+                    //    layer.setStyle(highlight);  //highlights selected.
+                  //  });
           
             },
             style:  function(feature){
