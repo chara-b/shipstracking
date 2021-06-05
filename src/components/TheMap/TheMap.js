@@ -59,15 +59,17 @@ function whenClicked(e) { // auti i methodos tha pigenei ta data tou feature pou
     var polyLineArray = [];
     var groupedFeatures = groupBy(filecontents, 'id', e.target.feature.properties.id); // group first parameter's array according to value id of 2nd parameter...
     var c = [];  // holds the coordinates in a form that a polyline needs
+
     for(let elmt of groupedFeatures[e.target.feature.properties.id]){
         groupedFeatures[e.target.feature.properties.id][groupedFeatures[e.target.feature.properties.id].indexOf(elmt)].properties.show_on_map = true;
         var x = elmt.properties.lat;
         var y = elmt.properties.lng;
+        c.push([x, y]); // holds the coordinates in a form that a polyline needs in order to be drawn
         if(elmt.properties.navigation === current_label){
             c.push([x, y]); // holds the coordinates in a form that a polyline needs in order to be drawn
         } else {
-            var pathLine = L.polyline(c).addTo(mymap)
-            polyLineArray.push(pathLine);
+            var segment = L.polyline(c).addTo(mymap)
+            polyLineArray.push(segment);
             c.length = 0; // c array is getting filled with all points under same label which form the whole segment
             // and when we find the whole segment we need to empty this array so it can store the next segment 
             // before emptying it we save its segment inside the polyLineArray and slowly slowly each single segment
@@ -77,18 +79,34 @@ function whenClicked(e) { // auti i methodos tha pigenei ta data tou feature pou
         }
         
     }
+    polyLineArray.forEach(function (segment, index) {
+        segment.on('mouseover', function(e) {
+            var layer = e.target;
+    
+            layer.setStyle({
+                color: 'yellow',
+                weight: 10,
+                opacity: 0.5
+            });
+        });
+        segment.on('mouseout', function(e) {
+            var layer = e.target;
+    
+            layer.setStyle({
+                color: 'dodgerblue',
+                weight: 3,
+                opacity: 1
+            });
+        });
+       // L.polyline(segment).addTo(map);
+    });
 
+    var polyline = L.polyline(c).setStyle({
+        color: 'dodgerblue'
+    }).addTo(mymap);
 
    // mymap.fitBounds(pathLine.getBounds());
-    pathLine.on('mouseover', function(e) {
-        var layer = e.target;
-
-        layer.setStyle({
-            color: 'yellow',
-            weight: 10,
-            opacity: 1
-        });
-    });
+ 
  //   var highlight = {
   //      'fillColor': 'purple',
  //       'weight': 2,
@@ -137,7 +155,7 @@ function whenClicked(e) { // auti i methodos tha pigenei ta data tou feature pou
         }).addTo(mymap);
 
         masterLayerGroup.addLayer(SameFeaturesLayer);
-        masterLayerGroup.addLayer(pathLine);
+        masterLayerGroup.addLayer(polyline);
 
 
 
