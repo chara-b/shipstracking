@@ -45,7 +45,7 @@ const TheMap = props => {
   
    // if(L.DomUtil.get('mymap')._leaflet_id === null){
     //    container._leaflet_id = null;
-       var mymap = L.map('mapid').setView([36.97554, 12.57211], 5);
+       var mymap = L.map('mapid', {preferCanvas: true}).setView([36.97554, 12.57211], 5);
 
        L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
@@ -65,9 +65,21 @@ function whenClicked(e) { // auti i methodos tha pigenei ta data tou feature pou
     }
 
     var pathLine = L.polyline(c).addTo(mymap)
-    mymap.fitBounds(pathLine.getBounds());
+   // mymap.fitBounds(pathLine.getBounds());
+    pathLine.on('mouseover', function(e) {
+        var layer = e.target;
 
- 
+        layer.setStyle({
+            color: 'yellow',
+            weight: 2,
+            opacity: 1
+        });
+    });
+    var highlight = {
+        'fillColor': 'yellow',
+        'weight': 2,
+        'opacity': 1
+    };
 // groupedfeatures array has a key and then this key's values are all the same features that we re found
 // the name of that key is the id that obviously all the same features have that's why inside geoJSON layer
 // i added an array with an index of target.feature.properties.id because we ask the grouped features from the 
@@ -93,6 +105,10 @@ function whenClicked(e) { // auti i methodos tha pigenei ta data tou feature pou
                     setFeatureclickedonmap("\""+popupContent+"\"")
                     layer.on({
                         click: whenClicked
+                    });
+                    layer.on("mouseover", function (e) { 
+                     //  stateLayer.setStyle(style); //resets layer colors
+                        layer.setStyle(highlight);  //highlights selected.
                     });
           
             },
