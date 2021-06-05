@@ -56,20 +56,32 @@ function whenClicked(e) { // auti i methodos tha pigenei ta data tou feature pou
      // console.log(e.target.feature);
     // group all features with same id together and then create an array with their coordinations in such way so that the polyline accepts them
     var current_label = 'A';
-    var polyLineArray = [];
+    var segmentsArray = [];
     var groupedFeatures = groupBy(filecontents, 'id', e.target.feature.properties.id); // group first parameter's array according to value id of 2nd parameter...
     var c = [];  // holds the coordinates in a form that a polyline needs
-
+    var p = [];
+    var counter = 0;
     for(let elmt of groupedFeatures[e.target.feature.properties.id]){
         groupedFeatures[e.target.feature.properties.id][groupedFeatures[e.target.feature.properties.id].indexOf(elmt)].properties.show_on_map = true;
         var x = elmt.properties.lat;
         var y = elmt.properties.lng;
-        c.push([x, y]); // holds the coordinates in a form that a polyline needs in order to be drawn
+        counter++;
+      //  current_label = elmt.properties.navigation;
+        p.push([x, y]); // holds the coordinates in a form that a polyline needs in order to be drawn
         if(elmt.properties.navigation === current_label){
             c.push([x, y]); // holds the coordinates in a form that a polyline needs in order to be drawn
+            if(counter === groupedFeatures[e.target.feature.properties.id].length){ // this is needed to take into consideration of adding the last group of same labels in the segments array of the polyline of the map
+                var segment = L.polyline(c).setStyle({
+                    color: 'dodgerblue'
+                }).addTo(mymap);
+                segmentsArray.push(segment);
+                c.length = 0;
+            }
         } else {
-            var segment = L.polyline(c).addTo(mymap)
-            polyLineArray.push(segment);
+            var segment = L.polyline(c).setStyle({
+                color: 'dodgerblue'
+            }).addTo(mymap);
+            segmentsArray.push(segment);
             c.length = 0; // c array is getting filled with all points under same label which form the whole segment
             // and when we find the whole segment we need to empty this array so it can store the next segment 
             // before emptying it we save its segment inside the polyLineArray and slowly slowly each single segment
@@ -79,7 +91,7 @@ function whenClicked(e) { // auti i methodos tha pigenei ta data tou feature pou
         }
         
     }
-    polyLineArray.forEach(function (segment, index) {
+    segmentsArray.forEach(function (segment, index) {
         segment.on('mouseover', function(e) {
             var layer = e.target;
     
@@ -104,8 +116,11 @@ function whenClicked(e) { // auti i methodos tha pigenei ta data tou feature pou
     var polyline = L.polyline(c).setStyle({
         color: 'dodgerblue'
     }).addTo(mymap);
+  //  var polyline2 = L.polyline(p).setStyle({
+  //      color: 'dodgerblue'
+  //  }).addTo(mymap);
 
-   // mymap.fitBounds(pathLine.getBounds());
+  //  mymap.fitBounds(polyline.getBounds());
  
  //   var highlight = {
   //      'fillColor': 'purple',
@@ -156,7 +171,7 @@ function whenClicked(e) { // auti i methodos tha pigenei ta data tou feature pou
 
         masterLayerGroup.addLayer(SameFeaturesLayer);
         masterLayerGroup.addLayer(polyline);
-
+      //  masterLayerGroup.addLayer(polyline2);
 
 
 /*
