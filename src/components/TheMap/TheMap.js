@@ -61,25 +61,28 @@ function whenClicked(e) { // auti i methodos tha pigenei ta data tou feature pou
     var c = [];  // holds the coordinates in a form that a polyline needs
     var p = [];
     var counter = 0;
+    var segment;
     for(let elmt of groupedFeatures[e.target.feature.properties.id]){
         groupedFeatures[e.target.feature.properties.id][groupedFeatures[e.target.feature.properties.id].indexOf(elmt)].properties.show_on_map = true;
         var x = elmt.properties.lat;
         var y = elmt.properties.lng;
         counter++;
       //  current_label = elmt.properties.navigation;
-      //  p.push([x, y]); // holds the coordinates in a form that a polyline needs in order to be drawn
+        p.push([x, y]); // holds the coordinates in a form that a polyline needs in order to be drawn
         if(elmt.properties.navigation === current_label){
             c.push([x, y]); // holds the coordinates in a form that a polyline needs in order to be drawn
             if(counter === groupedFeatures[e.target.feature.properties.id].length){ // this is needed to take into consideration of adding the last group of same labels in the segments array of the polyline of the map
-                var segment = L.polyline(c).setStyle({
-                    color: 'dodgerblue'
+                segment = L.polyline(c).setStyle({
+                    color: 'green',
+                    weight: 15
                 }).addTo(mymap);
                 segmentsArray.push(segment);
                 c.length = 0;
             }
         } else {
-            var segment = L.polyline(c).setStyle({
-                color: 'dodgerblue'
+            segment = L.polyline(c).setStyle({
+                color: 'green',
+                weight: 15
             }).addTo(mymap);
             segmentsArray.push(segment);
             c.length = 0; // c array is getting filled with all points under same label which form the whole segment
@@ -88,16 +91,17 @@ function whenClicked(e) { // auti i methodos tha pigenei ta data tou feature pou
             // that we form will end up form the whole polyline at the end !
             current_label = elmt.properties.navigation;
             c.push([x, y]);
+
         }
         
     }
     segmentsArray.forEach(function (segment, index) {
         segment.on('mouseover', function(e) {
             var layer = e.target;
-    
+            //e.target.bringToFront();
             layer.setStyle({
                 color: 'yellow',
-                weight: 10,
+                weight: 15,
                 opacity: 0.5
             });
         });
@@ -105,22 +109,23 @@ function whenClicked(e) { // auti i methodos tha pigenei ta data tou feature pou
             var layer = e.target;
     
             layer.setStyle({
-                color: 'dodgerblue',
-                weight: 3,
+                color: 'green',
+                weight: 15,
                 opacity: 1
             });
         });
        // L.polyline(segment).addTo(map);
     });
+
+
   //  var polyline2 = L.polyline(p).setStyle({
-  //      color: 'red'
+    //    color: 'green'
   //  }).addTo(mymap);
-    var polyline = L.polyline(c).setStyle({
-        color: 'dodgerblue'
+    var polyline = L.polyline(p).setStyle({
+        color: 'green'
     }).addTo(mymap);
 
-
-  //  mymap.fitBounds(polyline.getBounds());
+    mymap.fitBounds(polyline.getBounds());
  
  //   var highlight = {
   //      'fillColor': 'purple',
@@ -160,7 +165,7 @@ function whenClicked(e) { // auti i methodos tha pigenei ta data tou feature pou
             },
             style:  function(feature){
                 switch (feature.properties.id) { 
-                    case feature.properties.id: return { fillColor: "red" };
+                    case feature.properties.id: return { fillColor: "red", weight:20, color: 'purple', opacity: 0.5 };
                    // case 'some other id': return { color: "green" };
                 }
             },
@@ -171,8 +176,11 @@ function whenClicked(e) { // auti i methodos tha pigenei ta data tou feature pou
 
         masterLayerGroup.addLayer(SameFeaturesLayer);
         masterLayerGroup.addLayer(polyline);
-      //  masterLayerGroup.addLayer(polyline2);
-
+    //    masterLayerGroup.addLayer(polyline2);
+        masterLayerGroup.addLayer(segment);
+       // masterLayerGroup.addLayer(polyline3);
+        
+        
 
 /*
 if(removePaths === true){
