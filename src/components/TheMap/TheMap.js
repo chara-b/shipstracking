@@ -71,7 +71,7 @@ function whenClicked(e) { // auti i methodos tha pigenei ta data tou feature pou
         p.push([x, y]); // holds the coordinates in a form that a polyline needs in order to be drawn
         if(elmt.properties.navigation === current_label){
             c.push([x, y]); // holds the coordinates in a form that a polyline needs in order to be drawn
-            if(counter === groupedFeatures[e.target.feature.properties.id].length){ // this is needed to take into consideration of adding the last group of same labels in the segments array of the polyline of the map
+            if(counter === groupedFeatures[e.target.feature.properties.id].length){ // this is needed to take into consideration of adding the last group of same labels τοο in the segments array of the polyline of the map
                 segment = L.polyline(c).setStyle({
                     color: 'green',
                     weight: 15
