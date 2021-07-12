@@ -307,6 +307,7 @@ var geojsonMarkerOptions = {
        
     },[filecontents, removePaths]);
     
+    
 function removeLineofPath() {
     if(removePaths === false){
         setRemovePaths(true)   
@@ -314,7 +315,7 @@ function removeLineofPath() {
         setRemovePaths(false)   
     }
 }
-
+/*
 
 const parseFile = (files) => {
 
@@ -351,7 +352,7 @@ const parseFile = (files) => {
                 */
              //   setFilecontents(filecontents => filecontents.concat(event.data))
             // setTimeout(function(){  setFilecontents(event.data) }, 5000);
-             setFilecontents(event.data) 
+          /*   setFilecontents(event.data) 
                   
                 if(!event) { // ean den erthei kapoio feature apo ton worker tote kleise ton worker gt teleiose i douleia tou...
                     worker.terminate();
@@ -385,10 +386,10 @@ const parseFile = (files) => {
                 }
             }); 
             */
-                
+       /*         
         };
 
-    
+    */
 function groupBy(objectArray, property, id) { // group by same id so when click on the map on a feauture 
     // with a specific id all the rest points of same id appear with a line as the path we want to depict
     // found this function here --> https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce#Grouping_objects_by_a_property
