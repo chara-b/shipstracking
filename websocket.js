@@ -102,7 +102,7 @@ function getAndSendLine(connection){
 				
 			}
 		}
-/*
+
 		var foundfeaturewithsameid = recordBuffer.find(f => {
 			return (f.properties.id === parseInt(vessel_clone['id']) && f.properties.show_on_map === true);
 		});
@@ -111,7 +111,7 @@ function getAndSendLine(connection){
 			recordBuffer[ recordBuffer.indexOf(foundfeaturewithsameid) ].properties.show_on_map = false;
 	 
 		}
-		*/
+		
 		//we're sending objects in batches
 		if (recordBuffer.length == 0){	//start the batch
 			recordBuffer.push(feature);
@@ -130,7 +130,7 @@ function getAndSendLine(connection){
 					//recordBuffer = [];	//clear the array for the new n sec batch
 					recordBuffer.push(feature);
 					s.resume();
-				}, dataRate*1000);
+				}, dataRate*2000);
 			}
 		}
 	})
