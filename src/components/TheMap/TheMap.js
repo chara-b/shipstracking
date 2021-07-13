@@ -42,14 +42,17 @@ const TheMap = props => {
     useEffect(() => {
 
        // console.log(filecontents)
-  
-   // if(L.DomUtil.get('mymap')._leaflet_id === null){
-    //    container._leaflet_id = null;
-       var mymap = L.map('mapid', {preferCanvas: true}).setView([36.97554, 12.57211], 5);
+     //  if(L.DomUtil.get(' mymap ')){
+     //   mymap.remove();
+     //  } else if(L.DomUtil.get(' mymap ') === null){
+   //     if(L.DomUtil.get('mymap')._leaflet_id === null){
+            //    container._leaflet_id = null;
+            var mymap = L.map('mapid', {preferCanvas: true}).setView([36.97554, 12.57211], 5);
 
-       L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-       attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-       }).addTo(mymap);
+            L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+            }).addTo(mymap);
+      //  }
   // }
 
         client.onopen = () => {
