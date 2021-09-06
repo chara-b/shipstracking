@@ -1,0 +1,344 @@
+var lines = inputText.split('\n');
+
+Then, I would extract the names of the headers from the first line. 
+You need a function to read the values from each line.
+
+// This assumes no commas in the values names.
+function getCsvValuesFromLine(line) {
+    var values = lines[0].split(',');
+    value = values.map(function(value){
+        return value.replace(/\"/g, '');
+    });
+    return values;
+}
+
+var headers = getCsvValuesFromLine(lines[0]);
+
+
+Next, I would loop over the remaining lines and create an array of objects 
+representing the values in the lines.
+
+
+lines.shift(); // remove header line from array
+var people = lines.map(function(line) {
+    var person = {},
+        lineValues = getCsvValuesFromLine(line);
+    for(var i = 0; i < lines.length; i += 1) {
+        person[headers[i]] = lineValues[i];
+    }
+    return person;
+});
+
+
+If this all works, you should end up with an array of objects representing 
+the values in each line in your CSV.
+
+
+
+ANOTHER APPROACH
+
+Here is how to use the readAsBinaryString() from the FileReader API to load a local file.
+Basically, just need to listen to change event in <input type="file"> and call the readFile function.
+
+
+var fileInput = document.getElementById("csv"),
+
+    readFile = function () {
+        var reader = new FileReader();
+        reader.onload = function () {
+            document.getElementById('out').innerHTML = reader.result;
+        };
+        // start reading the file. When it is done, calls the onload event defined above.
+        reader.readAsBinaryString(fileInput.files[0]);
+    };
+
+fileInput.addEventListener('change', readFile);
+
+<p>Select local CSV File:</p>
+<input id="csv" type="file">
+
+<output id="out">
+    file contents will appear here
+</output>
+
+
+ANOTHER APPROACH 
+
+
+You need to check for status 0 (as when loading files locally with XMLHttpRequest, 
+you don't get a status returned because it's not from a Webserver)
+
+
+function readTextFile(file)
+{
+    var rawFile = new XMLHttpRequest();
+    rawFile.open("GET", file, false);
+    rawFile.onreadystatechange = function ()
+    {
+        if(rawFile.readyState === 4)
+        {
+            if(rawFile.status === 200 || rawFile.status == 0)
+            {
+                var allText = rawFile.responseText;
+                alert(allText);
+            }
+        }
+    }
+    rawFile.send(null);
+}
+
+
+
+And specify file:// in your filename:
+
+readTextFile("file:///C:/your/path/to/file.txt");
+
+
+
+WITH FETCH (MIGHT NOT WORK ANYMORE BECAUSE OF CORS ISSUES SINCE THEY NEED HTTP/S ONLY PROTOCOL AND NOT FILE://)
+
+fetch('file.txt')
+  .then(response => response.text())
+  .then(text => console.log(text))
+  // outputs the content of the text file
+
+
+fetch('file.json')
+  .then(response => response.json())
+  .then(jsonResponse => console.log(jsonResponse))     
+   // outputs a javascript object from the parsed json
+
+
+ANOTHER APPROACH
+
+function getData(){       //this will read file and send information to other function
+       var xmlhttp;
+
+       if (window.XMLHttpRequest) {
+           xmlhttp = new XMLHttpRequest();               
+       }           
+       else {               
+           xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");               
+       }
+
+       xmlhttp.onreadystatechange = function () {               
+           if (xmlhttp.readyState == 4) {                   
+             var lines = xmlhttp.responseText;    //*here we get all lines from text file*
+
+             intoArray(lines);     *//here we call function with parameter "lines*"                   
+           }               
+       }
+
+       xmlhttp.open("GET", "motsim1.txt", true);
+       xmlhttp.send();    
+}
+
+function intoArray (lines) {
+   // splitting all text data into array "\n" is splitting data from each new line
+   //and saving each new line as each element*
+
+   var lineArr = lines.split('\n'); 
+
+   //just to check if it works output lineArr[index] as below
+   document.write(lineArr[2]);         
+   document.write(lineArr[3]);
+}
+
+
+
+
+FIRST CODE 
+
+ //Parse large file in to small chunks
+                var parseFile = function (file) {
+
+                        var chunkSize = 1024 * 1024 * 16; //16MB Chunk size
+                        var fileSize = file.size;
+                        var currentChunk = 1;
+                        var totalChunks = Math.ceil((fileSize/chunkSize), chunkSize);
+
+                        while (currentChunk <= totalChunks) {
+
+                            var offset = (currentChunk-1) * chunkSize;
+                            var currentFilePart = file.slice(offset, (offset+chunkSize));
+
+                            console.log('Current chunk number is ', currentChunk);
+                            console.log('Current chunk data', currentFilePart);
+
+                            currentChunk++;
+                        }
+                };
+
+
+
+SECOND CODE
+
+
+FileReader API is asynchronous so you should handle it with block calls. 
+A for loop wouldn't do the trick since it wouldn't wait for each read to complete before reading the next chunk. 
+Here's a working approach.
+This is brilliant. Reading huge 3GB+ files without issue. The small chunk size makes it a bit slow though.
+Worked for me as well for large files. However, for larger files (>9GB), 
+I found out incrementing offset by evt.target.result.length was corrupting my file! 
+My quick solution was to increment it by chunkSize instead. I'm not sure if it's a FS issue 
+(I'm on Ubuntu) or something else, but it works just fine for any filesize if you offset += chunkSize
+onload is only called if there is no error. Use onloadend otherwise.
+
+function parseFile(file, callback) {
+    var fileSize   = file.size;
+    var chunkSize  = 64 * 1024; // bytes
+    var offset     = 0;
+    var self       = this; // we need a reference to the current object
+    var chunkReaderBlock = null;
+
+    var readEventHandler = function(evt) {
+        if (evt.target.error == null) {
+            offset += evt.target.result.length;
+            callback(evt.target.result); // callback for handling read chunk
+        } else {
+            console.log("Read error: " + evt.target.error);
+            return;
+        }
+        if (offset >= fileSize) {
+            console.log("Done reading file");
+            return;
+        }
+
+        // of to the next chunk
+        chunkReaderBlock(offset, chunkSize, file);
+    }
+
+    chunkReaderBlock = function(_offset, length, _file) {
+        var r = new FileReader();
+        var blob = _file.slice(_offset, length + _offset);
+        r.onload = readEventHandler;
+        r.readAsText(blob);
+    }
+
+    // now let's start the read with the first block
+    chunkReaderBlock(offset, chunkSize, file);
+}
+
+
+IMPROVED SECOND CODE
+
+/*
+ * Valid options are:
+ * - chunk_read_callback: a function that accepts the read chunk
+                          as its only argument. If binary option
+                          is set to true, this function will receive
+                          an instance of ArrayBuffer, otherwise a String
+ * - error_callback:      an optional function that accepts an object of type
+                          FileReader.error
+ * - success:             an optional function invoked as soon as the whole file has been
+                          read successfully
+ * - binary:              If true chunks will be read through FileReader.readAsArrayBuffer
+ *                        otherwise as FileReader.readAsText. Default is false.
+ * - chunk_size:          The chunk size to be used, in bytes. Default is 64K.
+ */
+function parseFile(file, options) {
+    var opts       = typeof options === 'undefined' ? {} : options;
+    var fileSize   = file.size;
+    var chunkSize  = typeof opts['chunk_size'] === 'undefined' ?  64 * 1024 : parseInt(opts['chunk_size']); // bytes
+    var binary     = typeof opts['binary'] === 'undefined' ? false : opts['binary'] == true;
+    var offset     = 0;
+    var self       = this; // we need a reference to the current object
+    var readBlock  = null;
+    var chunkReadCallback = typeof opts['chunk_read_callback'] === 'function' ? opts['chunk_read_callback'] : function() {};
+    var chunkErrorCallback = typeof opts['error_callback'] === 'function' ? opts['error_callback'] : function() {};
+    var success = typeof opts['success'] === 'function' ? opts['success'] : function() {};
+
+    var onLoadHandler = function(evt) {
+        if (evt.target.error == null) {
+            offset += evt.target.result.length;
+            chunkReadCallback(evt.target.result);
+        } else {
+            chunkErrorCallback(evt.target.error);
+            return;
+        }
+        if (offset >= fileSize) {
+            success(file);
+            return;
+        }
+
+        readBlock(offset, chunkSize, file);
+    }
+
+    readBlock = function(_offset, length, _file) {
+        var r = new FileReader();
+        var blob = _file.slice(_offset, length + _offset);
+        r.onload = onLoadHandler;
+        if (binary) {
+          r.readAsArrayBuffer(blob);
+        } else {
+          r.readAsText(blob);
+        }
+    }
+
+    readBlock(offset, chunkSize, file);
+}
+
+
+
+THIRD CODE
+
+
+var EventEmitter = require("events").EventEmitter
+
+// file - The file to read from
+// options - Possible options:
+    // type - (Default: "Text") Can be "Text" or "ArrayBuffer" ("DataURL" is unsupported at the moment - dunno how to concatenate dataUrls
+    // chunkSize - (Default: 64K) The number of bytes to get chunks of
+// Returns an EventEmitter that emits the following events:
+    // data(data) - Returns a chunk of data
+    // error(error) - Returns an error. If this event happens, reading of the file stops (no end event will happen).
+    // end() - Indicates that the file is done and there's no more data to read
+// derivedfrom here http://stackoverflow.com/questions/14438187/javascript-filereader-parsing-long-file-in-chunks
+function read(file, options) {
+    var emitter = new EventEmitter()
+
+    if(options === undefined) options = {}
+    if(options.type === undefined) options.type = "Text"
+    if(options.chunkSize === undefined) options.chunkSize = 64000
+
+    var offset = 0, method = 'readAs'+options.type//, dataUrlPreambleLength = "data:;base64,".length
+
+    var onLoadHandler = function(evt) {
+        if(evt.target.error !== null) {
+            emitter.emit('error', evt.target.error)
+            return;
+        }
+
+        var data = evt.target.result
+
+        offset += options.chunkSize
+        emitter.emit('data', data)
+        if (offset >= file.size) {
+            emitter.emit('end')
+        } else {
+            readChunk(offset, options.chunkSize, file)
+        }
+    }
+
+    var readChunk = function(_offset, length, _file) {
+        var r = new FileReader()
+        var blob = _file.slice(_offset, length + _offset)
+        r.onload = onLoadHandler
+        r[method](blob)
+    }
+
+    readChunk(offset, options.chunkSize, file)
+
+    return emitter
+}
+
+
+
+
+
+
+
+
+
+
+

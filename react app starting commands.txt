@@ -1,0 +1,33 @@
+node + npm installed
+
+npx create-react-app shipstracking --template typescript --use-npm
+
+cd shipstracking
+
+npm start
+
+----------------------------
+
+npm install @material-ui/core --save
+
+npm install @material-ui/icons --save
+
+----------------------------
+
+https://www.youtube.com/watch?v=15YB__vYpuA
+
+
+#61dafb react blue color
+#282c34 react dark grey color
+#2b3740 react dark grey color 2
+
+
+
+
+
+
+
+
+
+
+
